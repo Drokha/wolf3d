@@ -6,7 +6,7 @@
 #    By: lbonnete <lbonnete@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/12 18:24:53 by lbonnete          #+#    #+#              #
-#    Updated: 2019/04/25 16:57:59 by lbonnete         ###   ########.fr        #
+#    Updated: 2020/02/06 15:10:58 by lbonnete         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -151,7 +151,7 @@ OBJ = ft_lstnew.o\
 
 all: $(NAME)
 
-$(NAME):
+$(NAME): $(OBJ)
 	@echo "\nBuilding libft...\n"
 	@gcc -c -Wall -Wextra -Werror $(SRC)
 	@ar rc $(NAME) $(OBJ)

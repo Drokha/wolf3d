@@ -6,11 +6,18 @@
 /*   By: lbonnete <lbonnete@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 16:03:46 by lbonnete          #+#    #+#             */
-/*   Updated: 2019/05/29 16:04:08 by lbonnete         ###   ########.fr       */
+/*   Updated: 2020/03/05 15:29:56 by lbonnete         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../INC/wolf3d.h"
+
+int		end(t_var *info)
+{
+	if (info->map[(int)(info->posx)][(int)(info->posy)] == 'X')
+		return(escape(info));
+	return (1);
+}
 
 void			ft_multithreading(t_var *info)
 {

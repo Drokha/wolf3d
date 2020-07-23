@@ -6,23 +6,16 @@
 #    By: lbonnete <lbonnete@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/18 15:34:09 by trabut            #+#    #+#              #
-#    Updated: 2019/05/29 16:36:34 by lbonnete         ###   ########.fr        #
+#    Updated: 2020/03/05 15:21:55 by lbonnete         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = wolf3D
+NAME = wolf3d
 
 FLAGS       = -Wall -Wextra -Werror -O3
-SDL2		= -framework SDL2
-SDL2_MIXER	= -framework SDL2_mixer
-SDL2_NET	= -framework SDL2_net
 
-SDL2_HEADER			= -I Frameworks/SDL2.framework/Headers/
-SDL2_HEADER_MIXER	= -I Frameworks/SDL2_mixer.framework/Headers/
-SDL2_HEADER_NET	    = -I Frameworks/SDL2_net.framework/Headers/
-
-SDL			= -F Frameworks $(SDL2) $(SDL2_MIXER) $(SDL2_NET)
-SDL_HEADER	= -F Frameworks $(SDL2_HEADER) $(SDL2_HEADER_MIXER) $(SDL2_HEADER_NET)
+SDL			= -lpthread -F ./frameworks/ -framework SDL2 -framework SDL2_image 
+SDL_HEADER	= -I ./frameworks/SDL2.framework/Headers -I ./frameworks/SDL2_image.framework/Headers
 
 LIBFT = libft/libft.a
 
@@ -34,15 +27,21 @@ OBJ_DIR	 = OBJ
 
 SRC =	main.c\
 		dealers.c\
+		dealers2.c\
+		dealers3.c\
+		dealers4.c\
 		testaffichage3d.c\
 		tools.c\
 		algo.c\
 		tools2.c\
 		checker.c\
 		mapper.c\
-		ft_multi.c
+		ft_multi.c\
+		blank.c\
+		sdl_use.c\
+		diag.c
 
-INC = graphic_bibl.h wolf3d.h
+INC = wolf3d_define.h wolf3d_struc.h wolf3d.h
 OBJ	= $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC))
 
 $(shell mkdir -p $(OBJ_DIR))
@@ -50,7 +49,7 @@ $(shell mkdir -p $(OBJ_DIR))
 all: $(NAME)
 	echo "wolf3D ready"
 
-$(NAME): $(OBJ) $(LIBFT)
+$(NAME): $(OBJ) $(LIBFT) 
 	$(CC) -I $(HEAD_DIR) -o $@ $(OBJ) $(SDL) $(LIBFT) $(FLAGS) 
 
 
@@ -73,11 +72,6 @@ fclean:	clean
 	echo "Project Destroyed"
 
 re:	fclean all
-
-norm:
-	$(NORMINETTE) $(SRC_DIR)/ $(HEAD_DIR)/
-
-sdl:
 
 .PHONY:	all clean fclean re norm p
 

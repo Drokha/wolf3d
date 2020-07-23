@@ -6,7 +6,7 @@
 /*   By: lbonnete <lbonnete@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/25 17:15:23 by trabut            #+#    #+#             */
-/*   Updated: 2019/06/01 16:38:45 by lbonnete         ###   ########.fr       */
+/*   Updated: 2019/06/21 16:07:18 by lbonnete         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,27 @@
 
 static	void	cond(t_thrd *thrd)
 {
-	if (thrd->rayDirX < 0)
+	if (thrd->raydirx < 0)
 	{
-		thrd->stepX = -1;
-		thrd->sideDistX = (thrd->info->posX - thrd->mapX) * thrd->deltaDistX;
+		thrd->stepx = -1;
+		thrd->sidedistx = (thrd->info->posx - thrd->mapx) * thrd->deltadistx;
 	}
 	else
 	{
-		thrd->stepX = 1;
-		thrd->sideDistX = (thrd->mapX + 1.0 - thrd->info->posX)\
-		* thrd->deltaDistX;
+		thrd->stepx = 1;
+		thrd->sidedistx = (thrd->mapx + 1.0 - thrd->info->posx)
+		* thrd->deltadistx;
 	}
-	if (thrd->rayDirY < 0)
+	if (thrd->raydiry < 0)
 	{
-		thrd->stepY = -1;
-		thrd->sideDistY = (thrd->info->posY - thrd->mapY) * thrd->deltaDistY;
+		thrd->stepy = -1;
+		thrd->sidedisty = (thrd->info->posy - thrd->mapy) * thrd->deltadisty;
 	}
 	else
 	{
-		thrd->stepY = 1;
-		thrd->sideDistY = (thrd->mapY + 1.0 - thrd->info->posY)\
-		* thrd->deltaDistY;
+		thrd->stepy = 1;
+		thrd->sidedisty = (thrd->mapy + 1.0 - thrd->info->posy)
+		* thrd->deltadisty;
 	}
 }
 
@@ -42,20 +42,20 @@ static	void	alg_dda(t_thrd *thrd)
 {
 	while (thrd->hit == 0)
 	{
-		if (thrd->sideDistX < thrd->sideDistY)
+		if (thrd->sidedistx < thrd->sidedisty)
 		{
-			thrd->sideDistX += thrd->deltaDistX;
-			thrd->mapX += thrd->stepX;
+			thrd->sidedistx += thrd->deltadistx;
+			thrd->mapx += thrd->stepx;
 			thrd->side = 0;
 		}
 		else
 		{
-			thrd->sideDistY += thrd->deltaDistY;
-			thrd->mapY += thrd->stepY;
+			thrd->sidedisty += thrd->deltadisty;
+			thrd->mapy += thrd->stepy;
 			thrd->side = 1;
 		}
-		if (thrd->info->map[thrd->mapX][thrd->mapY] == '#'
-		|| thrd->info->map[thrd->mapX][thrd->mapY] == 'X')
+		if (thrd->info->map[thrd->mapx][thrd->mapy] == '#'
+		|| thrd->info->map[thrd->mapx][thrd->mapy] == 'X')
 		{
 			thrd->hit = 1;
 		}
@@ -66,20 +66,20 @@ static	void	wallh(t_thrd *thrd)
 {
 	int		lineheight;
 
-	lineheight = (int)(w_h / thrd->perpWallDist);
+	lineheight = (int)(W_H / thrd->perpwalldist);
 	thrd->y1 = -lineheight / 2 + WINDOW_H / 2;
 	thrd->y2 = lineheight / 2 + WINDOW_H / 2;
 }
 
 static	void	init_algo(t_thrd *thrd)
 {
-	thrd->cameraX = 2 * thrd->x / (double)WINDOW_W - 1;
-	thrd->rayDirX = thrd->info->dirX + thrd->info->planeX * thrd->cameraX;
-	thrd->rayDirY = thrd->info->dirY + thrd->info->planeY * thrd->cameraX;
-	thrd->mapX = (int)thrd->info->posX;
-	thrd->mapY = (int)thrd->info->posY;
-	thrd->deltaDistX = ft_fabs(1 / thrd->rayDirX);
-	thrd->deltaDistY = ft_fabs(1 / thrd->rayDirY);
+	thrd->camerax = 2 * thrd->x / (double)WINDOW_W - 1;
+	thrd->raydirx = thrd->info->dirx + thrd->info->planex * thrd->camerax;
+	thrd->raydiry = thrd->info->diry + thrd->info->planey * thrd->camerax;
+	thrd->mapx = (int)thrd->info->posx;
+	thrd->mapy = (int)thrd->info->posy;
+	thrd->deltadistx = ft_fabs(1 / thrd->raydirx);
+	thrd->deltadisty = ft_fabs(1 / thrd->raydiry);
 	thrd->hit = 0;
 }
 
@@ -90,24 +90,24 @@ void			*algo(void *thrds)
 
 	thrd = thrds;
 	info = thrd->info;
-	thrd->x = (WINDOW_W * thrd->id) / (NB_THREADS_MAX);
-	while (thrd->x < ((WINDOW_W * (thrd->id + 1) / NB_THREADS_MAX)))
+	thrd->x = thrd->id;
+	while (thrd->x < WINDOW_W)
 	{
 		init_algo(thrd);
 		cond(thrd);
 		alg_dda(thrd);
 		if (thrd->side == 0)
-			thrd->perpWallDist = (thrd->mapX - thrd->info->posX +
-			(1 - thrd->stepX) / 2) / thrd->rayDirX;
+			thrd->perpwalldist = (thrd->mapx - thrd->info->posx +
+			(1 - thrd->stepx) / 2) / thrd->raydirx;
 		else
-			thrd->perpWallDist = (thrd->mapY - thrd->info->posY +
-			(1 - thrd->stepY) / 2) / thrd->rayDirY;
+			thrd->perpwalldist = (thrd->mapy - thrd->info->posy +
+			(1 - thrd->stepy) / 2) / thrd->raydiry;
 		wallh(thrd);
-		if (thrd->info->texture_cap)			
+		if (thrd->info->texture_cap)
 			texturer(thrd, thrd->x);
 		else
 			draw_ray(thrd, info);
-		thrd->x++;
+		thrd->x += NB_THREADS_MAX;
 	}
 	pthread_exit(NULL);
 }

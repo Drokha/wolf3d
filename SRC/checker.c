@@ -6,7 +6,7 @@
 /*   By: lbonnete <lbonnete@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/14 14:48:43 by lbonnete          #+#    #+#             */
-/*   Updated: 2019/05/29 15:50:32 by lbonnete         ###   ########.fr       */
+/*   Updated: 2020/01/29 12:58:48 by lbonnete         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ int		spawn_and_top_checker(t_var *info)
 			&& (info->map)[i][j + 2] == 'A' && (info->map)[i + 1][j + 2] == 'H'
 			&& (info->map)[i + 2][j + 2] == 'E')
 			{
-				info->posX = i + 1;
-				info->posY = j + 1;
+				info->posx = i + 1;
+				info->posy = j + 1;
 				return (1);
 			}
 		}
